@@ -1,0 +1,81 @@
+import gym
+import random
+import numpy as np
+
+#börjar alltid vid pickup point med varan i hand
+class Warehouse(object):
+    def __init__(self, n, m, dropoff, blockade):
+        self.n = n
+        self.m = m
+        self.grid = np.zeros((m, n))
+        self.stateSpace = [i for i in range(self.n*self.m*2)]
+
+        #ta bort sista för terminalstate, dropoff alltid i sista rutan nu
+        self.stateSpace.remove(self.m*self.n*2-1)
+        self.stateSpacePlus = [i for i in range(self.n*self.m*2)]
+
+        self.actionSpace = {'Up': -self.m, 'Down': self.m, 'Left': -1, 'Right': 1, 'Drop': 9}
+        self.possibleActions = ['Up', 'Down', 'Left', 'Right', 'Drop']
+        #self.addPickup(pickup)
+        #self.addDropoff(dropoff)
+        #self.addBlockade(blockade)
+        #self.agentPosition = [random.randint(0, self.n - 1), random.randint(0, self.m - 1)]
+
+        self.agentPosition = 0
+        #Lägg in koordinater som indata
+        #self.pickup = pickup
+        self.dropoff = dropoff
+        self.blockade = blockade
+
+    def isTerminalState(self, state):
+        return state in self.stateSpacePlus and state not in self.stateSpace
+
+    def getAgentRowAndColumn(self):
+        x = self.agentPosition // self.m
+        y = self.agentPosition % self.n
+        return x, y
+
+    def setState(self, state):
+        #tar bort tidigare position och lägger till ny
+        x, y = self.getAgentRowAndColumn()
+        self.grid[x][y] = 0
+        self.agentPosition = state
+        x, y = self.getAgentRowAndColumn()
+        self.grid[x][y] = 1
+
+    def offGridMove(self, newState, oldState):
+        if newState not in self.stateSpacePlus:
+            return True
+        elif oldState % self.m == 0 and newState % self.m == self.m - 1:
+            return True
+        elif oldState % self.m == self.m - 1 and newState % self.m == 0:
+            return True
+        else:
+            return False
+
+    def step(self, action):
+        x, y = self.getAgentRowAndColumn()
+        resultingState = self.agentPosition + self.actionSpace[action]
+
+        #reward = -1 if not self.isTerminalState(resultingState) else 20
+        if not self.isTerminalState(resultingState):
+            reward = -1
+        else:
+            if resultingState ==
+
+        if not self.offGridMove(resultingState, self.agentPosition):
+            self.setState(resultingState)
+            return resultingState, reward, self.isTerminalState(self.agentPosition), None
+        else:
+            return self.agentPosition, reward, self.isTerminalState(self.agentPosition), None
+
+
+
+
+
+
+
+
+
+#env = gym.make("Taxi-v3").env
+#env.render()
