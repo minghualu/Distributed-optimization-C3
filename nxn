@@ -19,17 +19,9 @@ class Warehouse(object):
         #Defining all actions
         self.actionSpace = {'Up': -self.m, 'Down': self.m, 'Left': -1, 'Right': 1, 'Pickup': -(self.m*self.n), 'Drop': self.m*self.n}
         self.possibleActions = ['Up', 'Down', 'Left', 'Right', 'Pickup', 'Drop']
-        #self.addPickup(pickup)
-        #self.addDropoff(dropoff)
-        #self.addBlockade(blockade)
-        #self.agentPosition = [random.randint(0, self.n - 1), random.randint(0, self.m - 1)]
 
         #Start position: first square without item
         self.agentPosition = self.m*self.n
-        #Lägg in koordinater som indata
-        #self.pickup = pickup
-        #self.dropoff = dropoff
-        #self.blockade = blockade
 
     # Defining end of episode
     def isTerminalState(self, state):
@@ -132,6 +124,9 @@ def maxAction(Q, state, actions):
     return actions[action]
 
 
+"""
+Q-learning algorithm
+"""
 if __name__ == '__main__':
     env = Warehouse(5, 5)
 
