@@ -9,19 +9,27 @@ class Warehouse(object):
     def __init__(self, n, m):
         self.n = n
         self.m = m
-        self.grid = np.zeros((m, n))
+        self.grid = np.zeros((n, m))
         self.stateSpace = [i for i in range(self.n*self.m*2)]
 
         #Used for terminal state
-        self.stateSpace.remove(self.m*self.n*2-1)
+        self.stateSpace.remove(self.n*self.m*2-1)
         self.stateSpacePlus = [i for i in range(self.n*self.m*2)]
 
         #Defining all actions
         self.actionSpace = {'Up': -self.m, 'Down': self.m, 'Left': -1, 'Right': 1, 'Pickup': -(self.m*self.n), 'Drop': self.m*self.n}
         self.possibleActions = ['Up', 'Down', 'Left', 'Right', 'Pickup', 'Drop']
+        #self.addPickup(pickup)
+        #self.addDropoff(dropoff)
+        #self.addBlockade(blockade)
+        #self.agentPosition = [random.randint(0, self.n - 1), random.randint(0, self.m - 1)]
 
         #Start position: first square without item
         self.agentPosition = self.m*self.n
+        #Lägg in koordinater som indata
+        #self.pickup = pickup
+        #self.dropoff = dropoff
+        #self.blockade = blockade
 
     # Defining end of episode
     def isTerminalState(self, state):
@@ -31,10 +39,10 @@ class Warehouse(object):
     def getAgentRowAndColumn(self):
         if self.agentPosition < self.m*self.n:
             x = self.agentPosition // self.m
-            y = self.agentPosition % self.n
+            y = self.agentPosition % self.m
         else:
             x = (self.agentPosition - self.m*self.n) // self.m
-            y = (self.agentPosition - self.n*self.m) % self.n
+            y = (self.agentPosition - self.n*self.m) % self.m
         return x, y
 
     # Sets old position to new
@@ -84,7 +92,7 @@ class Warehouse(object):
                 #print('c')
                 reward = 20
             else:
-                reward = -20
+                reward = -50
                 #print('d')
 
         if not self.offGridMove(resultingState, self.agentPosition):
@@ -95,7 +103,7 @@ class Warehouse(object):
 
     def reset(self):
         self.agentPosition = self.m*self.n
-        self.grid = np.zeros((self.m, self.n))
+        self.grid = np.zeros((self.n, self.m))
         return self.agentPosition
 
     def render(self):
@@ -113,6 +121,7 @@ class Warehouse(object):
                         print('O', end='\t')
             print('\n')
         print('------------------')
+
     # Random action while exploring
     def actionSpaceSample(self):
         return np.random.choice(self.possibleActions)
@@ -124,15 +133,12 @@ def maxAction(Q, state, actions):
     return actions[action]
 
 
-"""
-Q-learning algorithm
-"""
 if __name__ == '__main__':
-    env = Warehouse(5, 5)
+    env = Warehouse(3, 7)
 
     ALPHA = 0.1
     GAMMA = 1.0
-    EPSILON = 0.2
+    EPSILON = 0.1
 
     Q = {}
     for state in env.stateSpacePlus:
@@ -150,6 +156,10 @@ if __name__ == '__main__':
             done = False
             epRewards = 0
             observation = env.reset()
+            if i == numGames - 500:
+                #Always starts without an item
+                env.grid[0][0] = 1
+                env.render()
 
             while not done:
                 rand = np.random.random()
@@ -173,3 +183,4 @@ if __name__ == '__main__':
                     env.render()
     plt.plot(totalRewards)
     plt.show()
+
