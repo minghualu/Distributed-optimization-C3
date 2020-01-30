@@ -22,6 +22,9 @@ class Warehouse:
         # Start position: first square without item
         self.agentPosition = 0
 
+        # Walls
+        self.walls = [1, 11, 21, 31, 41, 51, 61, 93, 83, 73, 63, 53]
+
 
     # Defining end of episode
     def isTerminalState(self, state):
@@ -41,9 +44,17 @@ class Warehouse:
         x, y = self.getAgentRowAndColumn()
         self.grid[x][y] = 1
 
+    def getWalls(self, wall):
+        x = wall // self.m
+        y = wall % self.m
+        if self.grid[x][y] != 1:
+            self.grid[x][y] = 2
+
     # Prohibits wrong movement
     def offGridMove(self, newState, oldState):
         # if we move into a row not in the grid
+        if newState in self.walls:
+            return True
         if newState not in self.stateSpacePlus:
             return True
         # if we're trying to wrap around to next row
@@ -61,7 +72,13 @@ class Warehouse:
         #print(self.agentPosition)
         #print(action)
 
-        reward = -1 if not self.isTerminalState(resultingState) else 50
+        if not self.isTerminalState(resultingState):
+            if resultingState in self.walls:
+                reward = -50
+            else:
+                reward = -1
+        else:
+            reward = 50
 
         if not self.offGridMove(resultingState, self.agentPosition):
             self.setState(resultingState)
@@ -81,6 +98,8 @@ class Warehouse:
                 if col == 0:
                     print('-', end='\t')
                 elif col == 1:
+                    print('O', end='\t')
+                elif col == 2:
                     print('X', end='\t')
             print('\n')
         print('------------------')
@@ -125,6 +144,8 @@ if __name__ == '__main__':
             observation = env.reset()
             if i == numGames - 250:
                 #Always starts without an item
+                for x in env.walls:
+                    env.getWalls(x)
                 env.grid[0][0] = 1
                 env.render()
 
