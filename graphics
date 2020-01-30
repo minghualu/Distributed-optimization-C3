@@ -1,0 +1,155 @@
+# GUI for Angry troll game
+
+from tkinter import *
+from angry_trolls2 import *
+
+class Application(Frame):
+    """ GUI application for the Angry troll game. """
+    def __init__(self, master):
+        """ Initialize the frame. """
+        super(Application, self).__init__(master)
+        self.grid(sticky = N+S+W+E)
+        self.create_widgets()
+        self.status = 'Not Started'
+        self.elapsedTime = 0
+
+#Skapar mina widgets
+    def create_widgets(self):
+        """ Create button, text, and entry widgets. """
+        self.lbl_title = Label(self, text = "Arga Troll spelbräde", font = (None, 15))
+        self.lbl_title.grid(row = 0, column = 0, columnspan = 3, pady = 10, sticky = N+W+E)
+
+
+        self.txt_rules = Text(self, width = 60, height = 10, wrap = WORD)
+        self.txt_rules.grid(row = 1, column = 0, columnspan = 3, padx = 5, pady = 5, sticky = W)
+        with open('rules2.txt', 'r') as f:
+            self.txt_rules.insert(INSERT, f.read())
+        self.grid_rowconfigure(1, weight=1)
+
+
+        self.lbl_boardSize = Label(self, text = "Storlek: ")
+        self.lbl_boardSize.grid(row = 2, column = 0, padx = 10, sticky = W)
+
+        self.ent_boardSize = Entry(self, width = 5)
+        self.ent_boardSize.insert(END, '4')
+        self.ent_boardSize.grid(row = 2, column = 1, sticky = W)
+
+        self.btn_create = Button(self, text = "Skapa spelbräde", command = self.createBoard)
+        self.btn_create.grid(row = 2, column = 2, columnspan = 1, sticky = E)
+        self.grid_rowconfigure(2, weight=1)
+
+        self.frame_board = Frame(self)
+        self.frame_highScore = Frame(self)
+
+        self.lbl_status = Label(self)
+        self.lbl_status.grid(row = 5, column = 0, columnspan = 2, padx = 10, pady = 10, sticky = W)
+
+        self.createBoard()
+
+#Metod som körs när användaren trycker på skapa spelbräde
+    def createBoard(self):
+        """ Create board with size given by the user. """
+        self.size = int(self.ent_boardSize.get())
+        if self.size <= 8 and self.size >= 4: #Begränsar storleken på spelbrädet
+            geo = "500x" + str(self.size*40+500) + "+800+0"
+            self.master.geometry(geo)
+
+            self.btn_board = [[0 for x in range(self.size)] for y in range(self.size)]
+
+            #Ta bort tidigare borads
+            self.frame_board.destroy()
+            self.frame_highScore.destroy()
+            self.lbl_status.configure(text = '')
+
+            self.frame_board = Frame(self, bd = 1, relief = GROOVE, padx = 5, pady = 5)
+            self.frame_board.grid(row = 4, column = 0, columnspan = 3, padx = 10, pady = 10, sticky = W+E+S)
+
+            #Skapar ett objekt av min "regelklass" AngryTroll
+            self.at = AngryTroll(self.size)
+
+            #Skapar spelbrädets buttons
+            for i in range(self.size):
+                self.frame_board.grid_columnconfigure(i, weight=1)
+                for j in range(self.size):
+                    if i > 0:
+                        state = DISABLED
+                    else:
+                        state = NORMAL
+                    self.btn_board[i][j] = Button(self.frame_board, text = "", state = state)
+                    button1 = self.btn_board[i][j]
+                    self.btn_board[i][j].config(command = lambda button=button1, row=i, col=j: self.addTroll(button, row, col))
+                    self.btn_board[i][j].grid(row = i, column = j, sticky = W+E, padx = 2, pady = 2)
+
+
+
+#Metod som körs när användaren försöker placera ett troll
+    def addTroll(self, btn, row, col):
+        #Ifall man vill backa
+        if row <= len(self.at.trollPlacement) - 1:
+            steps = len(self.at.trollPlacement) - row
+            self.at.undoTroll(steps)
+
+        #Kör metoden addTroll i AngryTroll-klassen
+        res = self.at.addTroll(col)
+        #Denna returnerar None ifall placeringen är tillåten
+        if res == None:
+            for j in range(self.size):
+                self.btn_board[row][j].configure(text = '')
+            self.btn_board[row][col].configure(text = 'TROLL')
+            self.lbl_status.configure(text = '')
+        else:
+            self.lbl_status.configure(text = 'Ej tillåten placering, försök igen.')
+
+        #Uppdaterar spelbrädet
+        for i in range(self.size):
+            for j in range(self.size):
+                text = self.btn_board[i][j]['text']
+                if i >= len(self.at.trollPlacement):
+                    text = ''
+                if i > len(self.at.trollPlacement):
+                    state = DISABLED
+                else:
+                    state = NORMAL
+                self.btn_board[i][j].config(state = state, text = text)
+
+        self.status = self.at.getStatus()
+        self.elapsedTime = self.at.getElapsedTime()
+
+        #Kollar ifall spelet är avklarat
+        if self.status == 'Finished':
+            message = 'Grattis du har vunnit! Det tog: ' + str(round(self.elapsedTime,2)) + ' sekunder.'
+            self.lbl_status.configure(text = message)
+
+            self.frame_highScore = Frame(self, bd = 1, relief = GROOVE, padx = 5, pady = 5)
+            self.frame_highScore.grid(row = 6, column = 0, columnspan = 3, padx = 10, pady = 10, sticky = W+E+S)
+
+            self.lbl_name = Label(self.frame_highScore, text = "Ange namn för att se ifall du platsar på High Score listan:")
+            self.lbl_name.grid(row = 0, column = 0, columnspan = 3, padx = 10, pady = 10, sticky = W)
+
+            self.ent_name = Entry(self.frame_highScore, width = 15)
+            self.ent_name.grid(row = 1, column = 0, padx = 10, pady = 10, sticky = W)
+
+            self.btn_submit = Button(self.frame_highScore, text = 'Submit', command = self.showHighScore)
+            self.btn_submit.grid(row = 1, column = 1, padx = 10, pady = 10, sticky = W)
+
+#Metod som visar highscorelistan
+    def showHighScore(self):
+        self.name = self.ent_name.get()
+        currentHighScoreList = self.at.addHighScore(self.name)
+        self.txt_HighScore = Text(self.frame_highScore, width = 60, height = 1, wrap = WORD)
+        self.txt_HighScore.grid(row = 2, column = 0, columnspan = 3, padx = 10, pady = 10, sticky = W)
+        self.txt_HighScore.insert(INSERT, currentHighScoreList)
+
+
+
+# main
+root = Tk()
+root.title("Angry Troll")
+#root.geometry("500x500")
+root.grid_rowconfigure(0, weight=1)
+root.grid_columnconfigure(0, weight=1)
+
+#Skockar in root i klassen Application
+app = Application(root)
+
+root.mainloop()
