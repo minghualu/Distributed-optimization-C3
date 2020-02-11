@@ -32,8 +32,8 @@ def main():
 
             done = [False, False]
             epRewards = [0, 0]
-            observation = [90, 900]
-            observation_ = [0, 0]
+            observation_old = [90, 900]
+            observation_new = [0, 0]
             agents[0].reset(0)
             agents[1].reset(90)
             env.reset()
@@ -61,21 +61,21 @@ def main():
                         continue
 
                     rand = np.random.random()
-                    action = maxAction(agent.Q, observation[j], env.possibleActions) if rand < (
+                    action_old = maxAction(agent.Q, observation_old[j], env.possibleActions) if rand < (
                                 1 - EPSILON) else env.actionSpaceSample()
                     #print(action)
 
-                    observation_[j], reward, done[j], info = env.step(action, agent, otherAgentPos)
+                    observation_new[j], reward, done[j], info = env.step(action_old, agent, otherAgentPos)
                     epRewards[j] += reward
                     #print(j,reward)
                     #print(j,agent.agentPosition)
                     #print(j,done[j])
                     #print(j,otherAgentPos)
-                    action_ = maxAction(agent.Q, observation_[j], env.possibleActions)
+                    action_new = maxAction(agent.Q, observation_new[j], env.possibleActions)
 
-                    agent.Q[observation[j], action] = agent.Q[observation[j], action] + ALPHA * (
-                                reward + GAMMA * agent.Q[observation_[j], action_] - agent.Q[observation[j], action])
-                    observation[j] = observation_[j]
+                    agent.Q[observation_old[j], action_old] = agent.Q[observation_old[j], action_old] + ALPHA * (
+                                reward + GAMMA * agent.Q[observation_new[j], action_new] - agent.Q[observation_old[j], action_old])
+                    observation_old[j] = observation_new[j]
 
                     otherAgentPos = agent.agentPosition
 
