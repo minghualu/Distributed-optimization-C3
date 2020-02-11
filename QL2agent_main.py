@@ -7,8 +7,9 @@ def maxAction(Q, state, actions):
     action = np.argmax(values)
     return actions[action]
 
+numGames = 20
+totalRewards = np.zeros((numGames, 2))
 
-#if __name__ == '__main__':
 def main():
     n = 10
     m = 10
@@ -21,8 +22,6 @@ def main():
     GAMMA = 1.0
     EPSILON = 1
 
-    numGames = 20000
-    totalRewards = np.zeros((numGames, 2))
     # env.render()
     maxSteps = 500
     steps = 0
@@ -99,6 +98,3 @@ def main():
                         #env.render()
 
                     j += 1
-
-    plt.plot(totalRewards)
-    plt.show()
