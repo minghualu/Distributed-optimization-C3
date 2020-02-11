@@ -8,7 +8,7 @@ def maxAction(Q, state, actions):
 
 agentYX = [(0, 0)]
 wallsYX = []
-numGames = 1000
+numGames = 10000
 totalRewards = np.zeros(numGames)
 
 def main():
@@ -19,8 +19,8 @@ def main():
     env = Warehouse(10, 10)
 
     ALPHA = 0.1
-    GAMMA = 1.0
-    EPSILON = 0.1
+    GAMMA = 1
+    EPSILON = 1
 
     Q = {}
     for state in env.stateSpacePlus:
@@ -34,6 +34,15 @@ def main():
     for i in range(numGames):
         if i % 1 == 0:
             print('starting game', i)
+
+            # Explore or exploit
+
+            if EPSILON - 1 / numGames > 0:
+                EPSILON -= 1 / numGames
+            else:
+                EPSILON = 0
+            
+            print(EPSILON)
 
             done = False
             epRewards = 0
@@ -74,8 +83,4 @@ def main():
                 if steps == maxSteps:
                     done = True
 
-            # Explore or exploit
-            if EPSILON - 1 / numGames > 0:
-                EPSILON -= 1 / numGames
-            else:
-                EPSILON = 0
+
