@@ -37,7 +37,7 @@ def main():
 
             done = False
             epRewards = 0
-            observation = env.reset()
+            observation_old = env.reset()
             if i == numGames - 1:
                 # Always starts without an item
                 """
@@ -50,21 +50,16 @@ def main():
 
             while not done:
                 rand = np.random.random()
-                action = maxAction(Q, observation, env.possibleActions) if rand < (
+                action_old = maxAction(Q, observation_old, env.possibleActions) if rand < (
                             1 - EPSILON) else env.actionSpaceSample()
-                observation_, reward, done, info = env.step(action)
+                observation_new, reward, done, info = env.step(action)
                 epRewards += reward
 
-                action_ = maxAction(Q, observation_, env.possibleActions)
-                Q[observation, action] = Q[observation, action] + ALPHA * (
-                            reward + GAMMA * Q[observation_, action_] - Q[observation, action])
-                observation = observation_
+                action_new = maxAction(Q, observation_new, env.possibleActions)
+                Q[observation_old, action_old] = Q[observation_old, action_old] + ALPHA * (
+                            reward + GAMMA * Q[observation_new, action_new] - Q[observation_old, action_old])
+                observation_old = observation_new
 
-                # Explore or exploit
-                if EPSILON - 2 / numGames > 0:
-                    EPSILON -= 2 / numGames
-                else:
-                    EPSILON = 0
                 totalRewards[i] = epRewards
 
                 # Renders the last episode
@@ -78,3 +73,9 @@ def main():
                 steps += 1
                 if steps == maxSteps:
                     done = True
+
+            # Explore or exploit
+            if EPSILON - 1 / numGames > 0:
+                EPSILON -= 1 / numGames
+            else:
+                EPSILON = 0
