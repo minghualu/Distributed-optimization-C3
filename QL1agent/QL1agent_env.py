@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class Warehouse:
     def __init__(self, n, m):
         self.n = n
