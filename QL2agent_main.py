@@ -6,15 +6,15 @@ def maxAction(Q, state, actions):
     action = np.argmax(values)
     return actions[action]
 
-numGames = 2000
+numGames = 10
 totalRewards = np.zeros((numGames, 2))
 wallsYX = []
+n = 4
+m = 4
 agent1 = [(0, 0)]
-agent2 = [(9, 0)]
+agent2 = [(n - 1, 0)]
 
 def main():
-    n = 10
-    m = 10
     env = Warehouse(n, m)
 
     ALPHA = 0.1
@@ -22,7 +22,7 @@ def main():
     EPSILON = 1
 
     # env.render()
-    agents = [Agent(0, 99, n, m), Agent(90, 9, n, m)]
+    agents = [Agent(0, (n * m) - 1, n, m), Agent((n - 1) * m, m - 1, n, m)]
 
     for i in range(numGames):
         if i % 1 == 0:
@@ -38,10 +38,10 @@ def main():
 
             done = [False, False]
             epRewards = [0, 0]
-            observation_old = [90, 900]
+            observation_old = [(n - 1) * m, (n - 1) * m * n * m]
             observation_new = [0, 0]
             agents[0].reset(0)
-            agents[1].reset(90)
+            agents[1].reset((n - 1) * m)
             env.reset()
             """
             if i == numGames - 250:
@@ -56,7 +56,7 @@ def main():
                 env.grid[3][0] = 1
                 env.render()
             """
-            otherAgentPos = 90
+            otherAgentPos = (n - 1) * m
 
             while not (done[0] and done[1]):
                 j = 0
@@ -98,4 +98,7 @@ def main():
                         #env.render()
 
                     j += 1
+    print(agent1)
+    print(agent2)
 
+## Fel när dom åker in i varandra. Ena dör medan andra fortsätter röra på sig och detta skapar negativa rewards?
