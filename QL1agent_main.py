@@ -52,7 +52,7 @@ def main():
                 rand = np.random.random()
                 action_old = maxAction(Q, observation_old, env.possibleActions) if rand < (
                             1 - EPSILON) else env.actionSpaceSample()
-                observation_new, reward, done, info = env.step(action)
+                observation_new, reward, done, info = env.step(action_old)
                 epRewards += reward
 
                 action_new = maxAction(Q, observation_new, env.possibleActions)
