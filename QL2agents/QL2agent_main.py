@@ -8,13 +8,13 @@ def maxAction(Q, state, actions):
 
 numGames = 20
 totalRewards = np.zeros((numGames, 2))
+wallsYX = []
+agent1 = [(0, 0)]
+agent2 = [(9, 0)]
 
 def main():
     n = 10
     m = 10
-    wallsYX = []
-    agent1 = [(0, 0)]
-    agent2 = [(9, 0)]
     env = Warehouse(n, m)
 
     ALPHA = 0.1
