@@ -6,7 +6,7 @@ def maxAction(Q, state, actions):
     action = np.argmax(values)
     return actions[action]
 
-numGames = 20
+numGames = 20000
 totalRewards = np.zeros((numGames, 2))
 wallsYX = []
 agent1 = [(0, 0)]
@@ -24,7 +24,7 @@ def main():
     # env.render()
     maxSteps = 500
     steps = 0
-    agents = [Agent(0, 99, n, m), Agent(90, 9, n, m)]
+    agents = [Agent(0, 9, n, m), Agent(90, 99, n, m)]
 
     for i in range(numGames):
         if i % 1 == 0:
