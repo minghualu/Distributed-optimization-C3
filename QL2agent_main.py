@@ -6,7 +6,7 @@ def maxAction(Q, state, actions):
     action = np.argmax(values)
     return actions[action]
 
-numGames = 20000
+numGames = 2000
 totalRewards = np.zeros((numGames, 2))
 wallsYX = []
 agent1 = [(0, 0)]
@@ -22,13 +22,19 @@ def main():
     EPSILON = 1
 
     # env.render()
-    maxSteps = 500
-    steps = 0
-    agents = [Agent(0, 9, n, m), Agent(90, 99, n, m)]
+    agents = [Agent(0, 99, n, m), Agent(90, 9, n, m)]
 
     for i in range(numGames):
         if i % 1 == 0:
             print('Starting episode', i)
+
+            # Explore or exploit
+            if EPSILON - 1 / numGames > 0:
+                EPSILON -= 1 / numGames
+            else:
+                EPSILON = 0
+
+            #print(EPSILON)
 
             done = [False, False]
             epRewards = [0, 0]
@@ -79,11 +85,6 @@ def main():
 
                     otherAgentPos = agent.agentPosition
 
-                    # Explore or exploit
-                    if EPSILON - 0.005 / numGames > 0:
-                        EPSILON -= 0.005 / numGames
-                    else:
-                        EPSILON = 0
                     totalRewards[i][j] = epRewards[j]
 
                     # Renders the last episode
@@ -97,3 +98,4 @@ def main():
                         #env.render()
 
                     j += 1
+
