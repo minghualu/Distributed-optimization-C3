@@ -1,6 +1,5 @@
 from tkinter import *
-from twoagents import *
-from
+from QL2agent_main import *
 
 
 i = 0
@@ -8,8 +7,8 @@ j = 0
 
 def Draw(i, j):
     global agent1, agent2, wallsYX
-    for r in range(4):
-        for c in range(4):
+    for r in range(10):
+        for c in range(10):
             if (r, c) == agent1[i]:
                 Label(root, text='A1', height=2, width=4, borderwidth=4, bg='blue', relief="groove").grid(row=r, column=c)
             elif (r, c) == agent2[j]:
