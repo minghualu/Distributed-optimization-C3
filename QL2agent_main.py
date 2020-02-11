@@ -1,19 +1,20 @@
-import numpy as np
 import matplotlib.pyplot as plt
+from QL2agent_env import *
+from QL2agent_agent import *
 
 def maxAction(Q, state, actions):
     values = np.array([Q[state, a] for a in actions])
     action = np.argmax(values)
     return actions[action]
 
-n = 10
-m = 10
-wallsYX = []
-agent1 = [(0, 0)]
-agent2 = [(9, 0)]
 
-if __name__ == '__main__':
-#def main():
+#if __name__ == '__main__':
+def main():
+    n = 10
+    m = 10
+    wallsYX = []
+    agent1 = [(0, 0)]
+    agent2 = [(9, 0)]
     env = Warehouse(n, m)
 
     ALPHA = 0.1

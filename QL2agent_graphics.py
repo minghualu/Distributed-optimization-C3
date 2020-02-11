@@ -1,5 +1,6 @@
 from tkinter import *
 from twoagents import *
+from
 
 
 i = 0
