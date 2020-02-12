@@ -58,9 +58,9 @@ class Warehouse:
         resultingPos = agent.agentPosition + self.actionSpace[action]
         resultingState = agent.getState(resultingPos, otherAgentPos)
 
-        if agent.agentPosition == otherAgentPos:
-            reward = -100
-            return currentState, reward, True, None
+        #if agent.agentPosition == otherAgentPos:
+         #   reward = -100
+          #  return currentState, reward, True, None
 
         if not self.offGridMove(resultingPos, agent.agentPosition, agent):
             # print(self.agentPosition)
@@ -72,7 +72,7 @@ class Warehouse:
                     # agent.updateReward(-50)
                 elif otherAgentPos == resultingPos:
                     reward = -100
-                    return resultingState, reward, True, None
+                    return resultingState, reward, True, 1
                 else:
                     reward = -1
             else:

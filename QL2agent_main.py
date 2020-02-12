@@ -6,11 +6,11 @@ def maxAction(Q, state, actions):
     action = np.argmax(values)
     return actions[action]
 
-numGames = 10
+numGames = 100000
 totalRewards = np.zeros((numGames, 2))
 wallsYX = []
-n = 4
-m = 4
+n = 10
+m = 10
 agent1 = [(0, 0)]
 agent2 = [(n - 1, 0)]
 
@@ -57,9 +57,12 @@ def main():
                 env.render()
             """
             otherAgentPos = (n - 1) * m
+            info = None
 
             while not (done[0] and done[1]):
                 j = 0
+                if info == 1:
+                    break
                 for agent in agents:
                     if done[j]:
                         j += 1
@@ -86,6 +89,8 @@ def main():
                     otherAgentPos = agent.agentPosition
 
                     totalRewards[i][j] = epRewards[j]
+                    if info == 1:
+                        break
 
                     # Renders the last episode
                     if i == numGames - 1:
