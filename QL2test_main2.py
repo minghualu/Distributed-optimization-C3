@@ -1,5 +1,5 @@
-from QL2agent_env2 import *
-from QL2agent_agent2 import *
+from QL2test_env2 import *
+from QL2test_agent2 import *
 
 def maxAction(Q, state, actions):
     values = np.array([Q[state, a] for a in actions])
