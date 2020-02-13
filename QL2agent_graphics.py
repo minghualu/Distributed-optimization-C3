@@ -1,5 +1,6 @@
 from tkinter import *
 from QL2agent_main import *
+import matplotlib.pyplot as plt
 
 
 i = 0
@@ -7,19 +8,19 @@ j = 0
 
 def Draw(i, j):
     global agent1, agent2, wallsYX
-    for r in range(10):
-        for c in range(10):
+    for r in range(n):
+        for c in range(m):
             if (r, c) == agent1[i]:
                 Label(root, text='A1', height=2, width=4, borderwidth=4, bg='blue', relief="groove").grid(row=r, column=c)
             elif (r, c) == agent2[j]:
                 Label(root, text='A2', height=2, width=4, borderwidth=4, bg='blue', relief="groove").grid(row=r, column=c)
-            elif r == 3 and c == 3:
+            elif r == n-1 and c == m-1:
                 Label(root, text='1', height=3, width=6, borderwidth=4, bg='green', relief="groove").grid(row=r, column=c)
-            elif r == 0 and c == 3:
+            elif r == 0 and c == m-1:
                 Label(root, text='2', height=3, width=6, borderwidth=4, bg='green', relief="groove").grid(row=r, column=c)
             elif r == 0 and c == 0:
                 Label(root, height=3, width=6, borderwidth=4, bg='red', relief="groove").grid(row=r, column=c)
-            elif r == 3 and c == 0:
+            elif r == n-1 and c == 0:
                 Label(root, height=3, width=6, borderwidth=4, bg='red', relief="groove").grid(row=r, column=c)
             elif (r, c) in wallsYX:
                 Label(root, height=3, width=6, borderwidth=4, bg='black', relief="groove").grid(row=r, column=c)
@@ -46,3 +47,5 @@ main()
 root=Tk()
 Refresher()
 root.mainloop()
+plt.plot(totalRewards)
+plt.show()
