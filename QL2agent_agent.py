@@ -9,7 +9,7 @@ class Agent:
         self.reward = 0
         self.posSpace = [i for i in range(n*m)]
 
-        # self.stateSpace.remove([dropoff*100:dropoff*100+99])
+        #self.stateSpace.remove([dropoff*100:dropoff*100+99])
 
         #self.stateSpacePlus = [i for i in range((n*m)**2)]
         self.possibleActions = ['Up', 'Down', 'Left', 'Right', 'Stay']
@@ -27,9 +27,9 @@ class Agent:
         self.reward = 0
         self.agentPosition = pickup
 
-    def isTerminalState(self, state):
+    def isTerminalState(self, resultingPos):
         #return state in self.stateSpacePlus and state not in self.stateSpace
-        if self.agentPosition == self.dropoff:
+        if resultingPos == self.dropoff:
             return True
         else:
             return False
