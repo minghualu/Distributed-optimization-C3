@@ -6,6 +6,7 @@ def maxAction(Q, state, actions):
     action = np.argmax(values)
     return actions[action]
 
+#Defining variables
 numGames = 100000
 totalRewards = np.zeros((numGames, 2))
 wallsYX = []
@@ -21,21 +22,21 @@ def main():
     GAMMA = 1.0
     EPSILON = 1
 
-    # env.render()
+    #Creating agents
     agents = [Agent(0, (n * m) - 1, n, m), Agent((n - 1) * m, m - 1, n, m)]
 
+    #Running all the eppisodes
     for i in range(numGames):
         if i % 1 == 0:
             print('Starting episode', i)
 
-            # Explore or exploit
+            #Decreasing epsilon
             if EPSILON - 1 / numGames > 0:
                 EPSILON -= 1 / numGames
             else:
                 EPSILON = 0
 
-            #print(EPSILON)
-
+            #Resetting variables
             done = [False, False]
             epRewards = [0, 0]
             observation_old = [(n - 1) * m, (n - 1) * m * n * m]
@@ -43,27 +44,22 @@ def main():
             agents[0].reset(0)
             agents[1].reset((n - 1) * m)
             env.reset()
-            """
-            if i == numGames - 250:
-                # Always starts without an item
-                for x in env.walls:
-                    env.getWalls(x)
 
-                #for x in env.walls:
-                    #wallsYX.append(env.getWalls(x))
-
-                env.grid[0][0] = 1
-                env.grid[3][0] = 1
-                env.render()
-            """
             otherAgentPos = (n - 1) * m
             info = None
 
+            #Running untill both agents are done
             while not (done[0] and done[1]):
                 j = 0
+                
+                #Breaking episode if agents have collided
                 if info == 1:
                     break
+                
+                #One agent taking a step each time
                 for agent in agents:
+                    
+                    #If one agent is done
                     if done[j]:
                         j += 1
                         otherAgentPos = agent.agentPosition
@@ -72,14 +68,10 @@ def main():
                     rand = np.random.random()
                     action_old = maxAction(agent.Q, observation_old[j], env.possibleActions) if rand < (
                                 1 - EPSILON) else env.actionSpaceSample()
-                    #print(action)
 
                     observation_new[j], reward, done[j], info = env.step(action_old, agent, otherAgentPos)
                     epRewards[j] += reward
-                    #print(j,reward)
-                    #print(j,agent.agentPosition)
-                    #print(j,done[j])
-                    #print(j,otherAgentPos)
+
                     action_new = maxAction(agent.Q, observation_new[j], env.possibleActions)
 
                     agent.Q[observation_old[j], action_old] = agent.Q[observation_old[j], action_old] + ALPHA * (
@@ -89,6 +81,8 @@ def main():
                     otherAgentPos = agent.agentPosition
 
                     totalRewards[i][j] = epRewards[j]
+                    
+                    #Breaking episode if agents have collided
                     if info == 1:
                         break
 
@@ -103,7 +97,3 @@ def main():
                         #env.render()
 
                     j += 1
-    print(agent1)
-    print(agent2)
-
-## Fel när dom åker in i varandra. Ena dör medan andra fortsätter röra på sig och detta skapar negativa rewards?
