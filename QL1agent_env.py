@@ -32,7 +32,7 @@ class Warehouse:
         y = self.agentPosition % self.m
         return x, y
 
-    # Sets old position to new
+    #Sets old position to new
     def setState(self, state):
         x, y = self.getAgentRowAndColumn()
         self.grid[x][y] = 0
