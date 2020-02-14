@@ -58,19 +58,11 @@ class Warehouse:
         currentPos = agent.agentPosition
         resultingPos = agent.agentPosition + self.actionSpace[action]
         resultingState = agent.getState(resultingPos, otherAgentPos)
-
-        #if agent.agentPosition == otherAgentPos:
-        #    reward = -100
-        #    return currentState, reward, True, None
-
+        
         if not self.offGridMove(resultingPos, agent.agentPosition, agent):
-            # print(self.agentPosition)
-            # print(action)
-            #reward = 0
             if not agent.isTerminalState(resultingPos):
                 if resultingPos in self.walls:
                     reward = -50
-                    # agent.updateReward(-50)
                 elif resultingPos == otherAgentPos:
                     reward = -100
                     return resultingState, reward, True, 1
@@ -89,9 +81,7 @@ class Warehouse:
             return currentState, agent.reward, agent.isTerminalState(currentPos), None
 
     def reset(self):
-        # agent.agentPosition = 0
         self.grid = np.zeros((self.n, self.m))
-        # return agent.agentPosition
 
     def render(self):
         print('------------------')
