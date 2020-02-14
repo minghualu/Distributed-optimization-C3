@@ -1,7 +1,6 @@
 from tkinter import *
 from QL1agent_main import *
 
-
 i = 0
 
 def Draw(i):
