@@ -11,8 +11,8 @@ class Warehouse:
         self.possibleActions = ['Up', 'Down', 'Left', 'Right', 'Stay']
 
         # Walls
-        # self.walls = [1, 11, 21, 31, 41, 51, 61, 93, 83, 73, 63, 53]
-        self.walls = []
+        self.walls = [1, 11, 21, 31, 41, 51, 61, 93, 83, 73, 63, 53]
+        #self.walls = []
 
     # Translate to x and y coordinates
     def getAgentRowAndColumn(self, agent):
@@ -52,25 +52,26 @@ class Warehouse:
 
     # Defining one step, with rewards
     def step(self, action, agent, otherAgentPos):
-        x, y = self.getAgentRowAndColumn(agent)
+        #x, y = self.getAgentRowAndColumn(agent)
 
         currentState = agent.getState(agent.agentPosition, otherAgentPos)
+        currentPos = agent.agentPosition
         resultingPos = agent.agentPosition + self.actionSpace[action]
         resultingState = agent.getState(resultingPos, otherAgentPos)
 
         #if agent.agentPosition == otherAgentPos:
-         #   reward = -100
-          #  return currentState, reward, True, None
+        #    reward = -100
+        #    return currentState, reward, True, None
 
         if not self.offGridMove(resultingPos, agent.agentPosition, agent):
             # print(self.agentPosition)
             # print(action)
             #reward = 0
-            if not agent.isTerminalState(resultingState):
+            if not agent.isTerminalState(resultingPos):
                 if resultingPos in self.walls:
                     reward = -50
                     # agent.updateReward(-50)
-                elif otherAgentPos == resultingPos:
+                elif resultingPos == otherAgentPos:
                     reward = -100
                     return resultingState, reward, True, 1
                 else:
@@ -81,11 +82,11 @@ class Warehouse:
             self.setGrid(resultingPos, agent)
             agent.updatePosition(resultingPos)
             agent.updateReward(reward)
-            return resultingState, agent.reward, agent.isTerminalState(resultingState), None
+            return resultingState, agent.reward, agent.isTerminalState(resultingPos), None
         else:
             reward = -1
             agent.updateReward(reward)
-            return currentState, agent.reward, agent.isTerminalState(currentState), None
+            return currentState, agent.reward, agent.isTerminalState(currentPos), None
 
     def reset(self):
         # agent.agentPosition = 0
