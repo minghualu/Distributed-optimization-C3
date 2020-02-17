@@ -11,8 +11,8 @@ class Warehouse:
         self.possibleActions = ['Up', 'Down', 'Left', 'Right', 'Stay']
 
         # Walls
-        self.walls = [1, 11, 21, 31, 41, 51, 61, 93, 83, 73, 63, 53]
-        #self.walls = []
+        #self.walls = [1, 11, 21, 31, 41, 51, 61, 93, 83, 73, 63, 53]
+        self.walls = []
 
     # Translate to x and y coordinates
     def getAgentRowAndColumn(self, agent):
