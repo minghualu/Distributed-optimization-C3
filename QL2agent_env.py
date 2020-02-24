@@ -65,6 +65,7 @@ class Warehouse:
                     reward = -50
                 elif resultingPos == otherAgentPos:
                     reward = -100
+                    # info = 1 ends episode
                     return resultingState, reward, True, 1
                 else:
                     reward = -1
