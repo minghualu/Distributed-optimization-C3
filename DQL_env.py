@@ -20,7 +20,8 @@ class Warehouse:
         self.agentPosition = 0
 
         # Walls
-        self.walls = [1, 11, 21, 31, 41, 51, 61, 94, 74, 64, 54,44,34,24,75,76,77,87,97]
+        #self.walls = [1, 11, 21, 31, 41, 51, 61, 94, 74, 64, 54,44,34,24,75,76,77,87,97]
+        self.walls = []
 
     # Defining end of episode
     def isTerminalState(self, state):
@@ -65,7 +66,6 @@ class Warehouse:
     # Defining one step, with rewards
     def step(self, action):
         x, y = self.getAgentRowAndColumn()
-        print(action)
         resultingState = self.agentPosition + self.actionSpace[action]
         #print(self.agentPosition)
         #print(action)
@@ -80,9 +80,13 @@ class Warehouse:
 
         if not self.offGridMove(resultingState, self.agentPosition):
             self.setState(resultingState)
-            return [resultingState], reward, self.isTerminalState(self.agentPosition), None
+            state = np.zeros(self.n*self.m)
+            state[resultingState] = 1
+            return state, reward, self.isTerminalState(self.agentPosition), None
         else:
-            return [self.agentPosition], reward, self.isTerminalState(self.agentPosition), None
+            state = np.zeros(self.n*self.m)
+            state[self.agentPosition] = 1
+            return state, reward, self.isTerminalState(self.agentPosition), None
 
     def reset(self):
         self.agentPosition = 0
