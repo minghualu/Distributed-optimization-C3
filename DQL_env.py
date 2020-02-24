@@ -1,31 +1,43 @@
 import numpy as np
 
+
 class Warehouse:
     def __init__(self, n, m):
         self.n = n
         self.m = m
         self.grid = np.zeros((n, m))
+        self.stateSpace = [i for i in range(self.n*self.m)]
+
+        # Used for terminal state
+        self.stateSpace.remove(self.m*self.n-1)
+        self.stateSpacePlus = [i for i in range(self.n*self.m)]
 
         # Defining all actions
-        self.actionSpace = {'Up': -self.m, 'Down': self.m, 'Left': -1, 'Right': 1, 'Stay': 0}
-        self.possibleActions = ['Up', 'Down', 'Left', 'Right', 'Stay']
+        self.actionSpace = [-self.m, self.m, -1, 1]
+        self.possibleActions = [0, 1, 2, 3] #Up, down, left, right
+
+        # Start position: first square without item
+        self.agentPosition = 0
 
         # Walls
-        #self.walls = [1, 11, 21, 31, 41, 51, 61, 93, 83, 73, 63, 53]
-        self.walls = []
+        self.walls = [1, 11, 21, 31, 41, 51, 61, 94, 74, 64, 54,44,34,24,75,76,77,87,97]
+
+    # Defining end of episode
+    def isTerminalState(self, state):
+        return state in self.stateSpacePlus and state not in self.stateSpace
 
     # Translate to x and y coordinates
-    def getAgentRowAndColumn(self, agent):
-        x = agent.agentPosition // self.m
-        y = agent.agentPosition % self.m
+    def getAgentRowAndColumn(self):
+        x = self.agentPosition // self.m
+        y = self.agentPosition % self.m
         return x, y
 
-    # Sets old position to new
-    def setGrid(self, resultingPos, agent):
-        x, y = self.getAgentRowAndColumn(agent)
+    #Sets old position to new
+    def setState(self, state):
+        x, y = self.getAgentRowAndColumn()
         self.grid[x][y] = 0
-        agent.agentPosition = resultingPos
-        x, y = self.getAgentRowAndColumn(agent)
+        self.agentPosition = state
+        x, y = self.getAgentRowAndColumn()
         self.grid[x][y] = 1
 
     def getWalls(self, wall):
@@ -36,52 +48,46 @@ class Warehouse:
         return x, y
 
     # Prohibits wrong movement
-    def offGridMove(self, newPos, oldPos, agent):
+    def offGridMove(self, newState, oldState):
         # if we move into a row not in the grid
-        if newPos in self.walls:
+        if newState in self.walls:
             return True
-        if newPos not in agent.posSpace:
+        if newState not in self.stateSpacePlus:
             return True
         # if we're trying to wrap around to next row
-        elif oldPos % self.m == 0 and newPos % self.m == self.m - 1:
+        elif oldState % self.m == 0 and newState % self.m == self.m - 1:
             return True
-        elif oldPos % self.m == self.m - 1 and newPos % self.m == 0:
+        elif oldState % self.m == self.m - 1 and newState % self.m == 0:
             return True
         else:
             return False
 
     # Defining one step, with rewards
-    def step(self, action, agent, otherAgentPos):
-        #x, y = self.getAgentRowAndColumn(agent)
+    def step(self, action):
+        x, y = self.getAgentRowAndColumn()
+        print(action)
+        resultingState = self.agentPosition + self.actionSpace[action]
+        #print(self.agentPosition)
+        #print(action)
 
-        currentState = agent.getState(agent.agentPosition, otherAgentPos)
-        currentPos = agent.agentPosition
-        resultingPos = agent.agentPosition + self.actionSpace[action]
-        resultingState = agent.getState(resultingPos, otherAgentPos)
-        
-        if not self.offGridMove(resultingPos, agent.agentPosition, agent):
-            if not agent.isTerminalState(resultingPos):
-                if resultingPos in self.walls:
-                    reward = -50
-                elif resultingPos == otherAgentPos:
-                    reward = -100
-                    return resultingState, reward, True, 1
-                else:
-                    reward = -1
+        if not self.isTerminalState(resultingState):
+            if resultingState in self.walls:
+                reward = -50
             else:
-                reward = 50
-
-            self.setGrid(resultingPos, agent)
-            agent.updatePosition(resultingPos)
-            agent.updateReward(reward)
-            return resultingState, agent.reward, agent.isTerminalState(resultingPos), None
+                reward = -1
         else:
-            reward = -1
-            agent.updateReward(reward)
-            return currentState, agent.reward, agent.isTerminalState(currentPos), None
+            reward = 50
+
+        if not self.offGridMove(resultingState, self.agentPosition):
+            self.setState(resultingState)
+            return [resultingState], reward, self.isTerminalState(self.agentPosition), None
+        else:
+            return [self.agentPosition], reward, self.isTerminalState(self.agentPosition), None
 
     def reset(self):
+        self.agentPosition = 0
         self.grid = np.zeros((self.n, self.m))
+        return self.agentPosition
 
     def render(self):
         print('------------------')
@@ -99,3 +105,4 @@ class Warehouse:
     # Random action while exploring
     def actionSpaceSample(self):
         return np.random.choice(self.possibleActions)
+
