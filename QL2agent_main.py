@@ -45,12 +45,15 @@ def main():
         agents[1].reset((n - 1) * m)
         env.reset()
 
-        otherAgentPos = (n - 1) * m
+        #List of the other agents posision
+        pos_list = [(n - 1) * m, 0]
         info = None
 
         #Running untill both agents are done
         while not (done[0] and done[1]):
             j = 0
+            #Update the agents posisions after both agents have steped
+            pos_list = [agents[1].agentPosition, agents[0].agentPosition]
             
             #Breaking episode if agents have collided
             if info == 1:
@@ -58,6 +61,8 @@ def main():
             
             #One agent taking a step each time
             for agent in agents:
+                
+                otherAgentPos = pos_list[j]
                 
                 #If one agent is done
                 if done[j]:
@@ -77,8 +82,6 @@ def main():
                 agent.Q[observation_old[j], action_old] = agent.Q[observation_old[j], action_old] + ALPHA * (
                             reward + GAMMA * agent.Q[observation_new[j], action_new] - agent.Q[observation_old[j], action_old])
                 observation_old[j] = observation_new[j]
-
-                otherAgentPos = agent.agentPosition
 
                 totalRewards[i][j] = epRewards[j]
                 
