@@ -4,7 +4,7 @@ from DQL_agentclass import *
 def main():
     n = 10
     m = 10
-    NumGames = 100
+    NumGames = 1000
     env = Warehouse(n, m, 0, 90, 99, 9)
     state_size = 100 
     action_size = 4
@@ -19,7 +19,8 @@ def main():
         state = env.state
         state = np.reshape(state, [1, state_size])
         done = [False, False]
-        for time in range(500):
+        for time in range(1000):
+            #print(time)
             for j in range(2):
                 if done[j]:
                     continue
@@ -33,12 +34,18 @@ def main():
                 epRewards += reward
                 totalReward[i] = epRewards
 
+                #If the agents have collided
                 if info == 1:
                     break
                 
                 if len(agents[j].memory) > batch_size:
+                    #print('memory')
                     agents[j].replay(batch_size)
-           
+            
+            #If the agents have collided           
+            if info == 1:
+                print(i, epRewards)
+                break
             if (done[0] and done[1]):
                 print(i, epRewards)
                 break

@@ -76,13 +76,17 @@ class Warehouse:
             if not self.isTerminalState(resultingPos, agent_nr):
                 if resultingPos in self.walls:
                     reward = -50
-                elif resultingPos == self.agentsPos[agent_nr-1]:
+                #elif resultingPos == self.agentsPos[agent_nr-1]:
+                elif self.state[resultingPos] == 1:
                     reward = -100
-                    return self.state, reward, True, 1
+                    print('collided')
+                    return self.state, reward, False, 1
                 else:
                     reward = -1
+                    #print('stepped')
             else:
                 reward = 50
+                print('Reached goal', agent_nr)
 
             #self.setGrid(resultingPos, agent)
             self.updateState(currentPos, resultingPos)
@@ -97,6 +101,7 @@ class Warehouse:
         self.state = np.zeros(self.n*self.m)
         self.state[self.start[0]] = 1
         self.state[self.start[1]] = 1
+        self.agentsPos = [self.start[0], self.start[1]]
 
     # Random action while exploring
     def actionSpaceSample(self):
