@@ -45,15 +45,15 @@ def main():
         agents[1].reset((n - 1) * m)
         env.reset()
 
-        #List of the other agents posision
+        #List of the other agents position
         pos_list = [(n - 1) * m, 0]
+        pos_list_temp = [0, 0]
+        temp = [0,0,0,0,0,0,0,0]
         info = None
 
         #Running untill both agents are done
         while not (done[0] and done[1]):
             j = 0
-            #Update the agents posisions after both agents have steped
-            pos_list = [agents[1].agentPosition, agents[0].agentPosition]
             
             #Breaking episode if agents have collided
             if info == 1:
@@ -67,7 +67,7 @@ def main():
                 #If one agent is done
                 if done[j]:
                     j += 1
-                    otherAgentPos = agent.agentPosition
+                    #otherAgentPos = agent.agentPosition
                     continue
 
                 rand = np.random.random()
@@ -76,11 +76,24 @@ def main():
 
                 observation_new[j], reward, done[j], info = env.step(action_old, agent, otherAgentPos)
                 epRewards[j] += reward
+                #print(info)
 
                 action_new = maxAction(agent.Q, observation_new[j], env.possibleActions)
 
                 agent.Q[observation_old[j], action_old] = agent.Q[observation_old[j], action_old] + ALPHA * (
                             reward + GAMMA * agent.Q[observation_new[j], action_new] - agent.Q[observation_old[j], action_old])
+                ###
+                if j == 0:
+                    temp[0] = observation_old[0]
+                    temp[2] = action_old
+                    temp[4] = observation_new[0]
+                    temp[6] = action_new
+                if j == 1:
+                    temp[1] = observation_old[1]
+                    temp[3] = action_old
+                    temp[5] = observation_new[1]
+                    temp[7] = action_new
+                ###
                 observation_old[j] = observation_new[j]
 
                 totalRewards[i][j] = epRewards[j]
@@ -100,3 +113,17 @@ def main():
                     #env.render()
 
                 j += 1
+            # Update the agents posisions after both agents have steped
+            pos_list = [agents[1].agentPosition, agents[0].agentPosition]
+            if pos_list_temp[0] == pos_list[1] and pos_list_temp[1] == pos_list[0]:
+                reward = -100
+                agents[0].Q[temp[0], temp[2]] = agents[0].Q[temp[0], temp[2]] + ALPHA * (
+                            reward + GAMMA * agents[0].Q[temp[4], temp[6]] - agents[0].Q[temp[0], temp[2]])
+                agents[1].Q[temp[1], temp[3]] = agents[1].Q[temp[1], temp[3]] + ALPHA * (
+                            reward + GAMMA * agents[1].Q[temp[5], temp[7]] - agents[1].Q[temp[1], temp[3]])
+                info = 1
+
+
+
+            pos_list_temp = pos_list
+        #print('i', i)
