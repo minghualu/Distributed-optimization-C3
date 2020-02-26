@@ -86,6 +86,7 @@ class Warehouse:
 
             #self.setGrid(resultingPos, agent)
             self.updateState(currentPos, resultingPos)
+            self.agentsPos[agent_nr] = resultingPos
             return self.state, reward, self.isTerminalState(resultingPos, agent_nr), None
         else:
             reward = -1
