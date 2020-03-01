@@ -17,10 +17,10 @@ def main():
         epRewards = 0
         env.reset()
         state = env.state
-        state = np.reshape(state, [1, state_size])
+        #state = np.reshape(state, [1, state_size])
         done = [False, False]
         for time in range(1000):
-            #print(time)
+            print(time)
             for j in range(2):
                 if done[j]:
                     continue
@@ -28,7 +28,7 @@ def main():
                 action = agents[j].act(state)
                 next_state, reward, done[j], info = env.step(action, j)
                 #reward = reward if not done else -10
-                next_state = np.reshape(next_state, [1, state_size])
+                #next_state = np.reshape(next_state, [1, state_size])
                 agents[j].memorize(state, action, reward, next_state, done[j])
                 state = next_state
                 epRewards += reward
