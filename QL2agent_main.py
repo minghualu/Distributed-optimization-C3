@@ -6,7 +6,8 @@ def maxAction(Q, state, actions):
     action = np.argmax(values)
     return actions[action]
 
-numGames = 100000
+#Defining variables
+numGames = 200000
 totalRewards = np.zeros((numGames, 2))
 wallsYX = []
 n = 10
@@ -21,88 +22,108 @@ def main():
     GAMMA = 1.0
     EPSILON = 1
 
-    # env.render()
+    #Creating agents
     agents = [Agent(0, (n * m) - 1, n, m), Agent((n - 1) * m, m - 1, n, m)]
 
+    #Running all the eppisodes
     for i in range(numGames):
-        if i % 1 == 0:
+        if i % 1000 == 0:
             print('Starting episode', i)
 
-            # Explore or exploit
-            if EPSILON - 1 / numGames > 0:
-                EPSILON -= 1 / numGames
-            else:
-                EPSILON = 0
+        #Decreasing epsilon
+        if EPSILON - 1 / numGames > 0:
+            EPSILON -= 1 / numGames
+        else:
+            EPSILON = 0
 
-            #print(EPSILON)
+        #Resetting variables
+        done = [False, False]
+        epRewards = [0, 0]
+        observation_old = [(n - 1) * m, (n - 1) * m * n * m]
+        observation_new = [0, 0]
+        agents[0].reset(0)
+        agents[1].reset((n - 1) * m)
+        env.reset()
 
-            done = [False, False]
-            epRewards = [0, 0]
-            observation_old = [(n - 1) * m, (n - 1) * m * n * m]
-            observation_new = [0, 0]
-            agents[0].reset(0)
-            agents[1].reset((n - 1) * m)
-            env.reset()
-            """
-            if i == numGames - 250:
-                # Always starts without an item
-                for x in env.walls:
-                    env.getWalls(x)
+        #List of the other agents position
+        pos_list = [(n - 1) * m, 0]
+        pos_list_temp = [0, 0]
+        temp = [0,0,0,0,0,0,0,0]
+        info = None
 
-                #for x in env.walls:
-                    #wallsYX.append(env.getWalls(x))
+        #Running untill both agents are done
+        while not (done[0] and done[1]):
+            j = 0
+            
+            #Breaking episode if agents have collided
+            if info == 1:
+                break
+            
+            #One agent taking a step each time
+            for agent in agents:
+                
+                otherAgentPos = pos_list[j]
+                
+                #If one agent is done
+                if done[j]:
+                    j += 1
+                    #otherAgentPos = agent.agentPosition
+                    continue
 
-                env.grid[0][0] = 1
-                env.grid[3][0] = 1
-                env.render()
-            """
-            otherAgentPos = (n - 1) * m
-            # info = 1 ends episode
-            info = None
+                rand = np.random.random()
+                action_old = maxAction(agent.Q, observation_old[j], env.possibleActions) if rand < (
+                            1 - EPSILON) else env.actionSpaceSample()
 
-            while not (done[0] and done[1]):
-                j = 0
+                observation_new[j], reward, done[j], info = env.step(action_old, agent, otherAgentPos)
+                epRewards[j] += reward
+                #print(info)
+
+                action_new = maxAction(agent.Q, observation_new[j], env.possibleActions)
+
+                agent.Q[observation_old[j], action_old] = agent.Q[observation_old[j], action_old] + ALPHA * (
+                            reward + GAMMA * agent.Q[observation_new[j], action_new] - agent.Q[observation_old[j], action_old])
+                ###
+                if j == 0:
+                    temp[0] = observation_old[0]
+                    temp[2] = action_old
+                    temp[4] = observation_new[0]
+                    temp[6] = action_new
+                if j == 1:
+                    temp[1] = observation_old[1]
+                    temp[3] = action_old
+                    temp[5] = observation_new[1]
+                    temp[7] = action_new
+                ###
+                observation_old[j] = observation_new[j]
+
+                totalRewards[i][j] = epRewards[j]
+                
+                #Breaking episode if agents have collided
                 if info == 1:
                     break
-                for agent in agents:
-                    if done[j]:
-                        j += 1
-                        otherAgentPos = agent.agentPosition
-                        continue
 
-                    rand = np.random.random()
-                    action_old = maxAction(agent.Q, observation_old[j], env.possibleActions) if rand < (
-                                1 - EPSILON) else env.actionSpaceSample()
-                    #print(action)
+                # Renders the last episode
+                if i == numGames - 1:
+                    for x in env.walls:
+                        wallsYX.append(env.getWalls(x))
+                    if j == 0:
+                        agent1.append(env.getAgentRowAndColumn(agents[0]))
+                    else:
+                        agent2.append(env.getAgentRowAndColumn(agents[1]))
+                    #env.render()
 
-                    observation_new[j], reward, done[j], info = env.step(action_old, agent, otherAgentPos)
-                    epRewards[j] += reward
-                    #print(j,reward)
-                    #print(j,agent.agentPosition)
-                    #print(j,done[j])
-                    #print(j,otherAgentPos)
-                    action_new = maxAction(agent.Q, observation_new[j], env.possibleActions)
+                j += 1
+            # Update the agents posisions after both agents have steped
+            pos_list = [agents[1].agentPosition, agents[0].agentPosition]
+            if pos_list_temp[0] == pos_list[1] and pos_list_temp[1] == pos_list[0]:
+                reward = -100
+                agents[0].Q[temp[0], temp[2]] = agents[0].Q[temp[0], temp[2]] + ALPHA * (
+                            reward + GAMMA * agents[0].Q[temp[4], temp[6]] - agents[0].Q[temp[0], temp[2]])
+                agents[1].Q[temp[1], temp[3]] = agents[1].Q[temp[1], temp[3]] + ALPHA * (
+                            reward + GAMMA * agents[1].Q[temp[5], temp[7]] - agents[1].Q[temp[1], temp[3]])
+                info = 1
 
-                    agent.Q[observation_old[j], action_old] = agent.Q[observation_old[j], action_old] + ALPHA * (
-                                reward + GAMMA * agent.Q[observation_new[j], action_new] - agent.Q[observation_old[j], action_old])
-                    observation_old[j] = observation_new[j]
 
-                    otherAgentPos = agent.agentPosition
 
-                    totalRewards[i][j] = epRewards[j]
-                    if info == 1:
-                        break
-
-                    # Renders the last episode
-                    if i == numGames - 1:
-                        for x in env.walls:
-                            wallsYX.append(env.getWalls(x))
-                        if j == 0:
-                            agent1.append(env.getAgentRowAndColumn(agents[0]))
-                        else:
-                            agent2.append(env.getAgentRowAndColumn(agents[1]))
-                        #env.render()
-
-                    j += 1
-    print(agent1)
-    print(agent2)
+            pos_list_temp = pos_list
+        #print('i', i)
