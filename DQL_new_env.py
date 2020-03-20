@@ -9,7 +9,7 @@ class Warehouse:
         self.grid = np.zeros((n, m))
         self.state = np.zeros((1, n*m))
         self.state[0][start1] = 1
-        self.state[0][start2] = 1
+        self.state[0][start2] = 2
         self.agentsPos = [start1, start2]
 
         self.posSpace = [i for i in range(n*m)]
@@ -62,8 +62,9 @@ class Warehouse:
             return False
         
     def updateState(self, currentPos, resultingPos):
+        agent = self.state[0][currentPos]
         self.state[0][currentPos] = 0
-        self.state[0][resultingPos] = 1
+        self.state[0][resultingPos] = agent
 
     # Defining one step, with rewards
     def step(self, action, agent_nr):
@@ -100,7 +101,7 @@ class Warehouse:
         #self.grid = np.zeros((self.n, self.m))
         self.state = np.zeros((1, self.n*self.m))
         self.state[0][self.start[0]] = 1
-        self.state[0][self.start[1]] = 1
+        self.state[0][self.start[1]] = 2
         self.agentsPos = [self.start[0], self.start[1]]
 
     # Random action while exploring
