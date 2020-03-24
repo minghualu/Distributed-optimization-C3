@@ -1,16 +1,19 @@
 from DQL_new_env import *
 from DQL_agentclass import *
+import matplotlib.pyplot as plt
 
 def main():
-    n = 10
-    m = 10
-    NumGames = 1000
-    env = Warehouse(n, m, 0, 90, 99, 9)
-    state_size = 100 
+    n = 4
+    m = 4
+    NumGames = 300
+    #env = Warehouse(n, m, 0, 90, 99, 9)
+    env = Warehouse(n, m, 0, 12, 15, 3)
+    #state_size = 100 
+    state_size = 16 
     action_size = 4
     agents = [DQNAgent(state_size, action_size), DQNAgent(state_size, action_size)]
     #done = False
-    batch_size = 32
+    batch_size = 100 #32
     totalReward = np.zeros(NumGames)
 
     for i in range(NumGames):
@@ -19,8 +22,8 @@ def main():
         state = env.state
         #state = np.reshape(state, [1, state_size])
         done = [False, False]
-        for time in range(1000):
-            print(time)
+        for time in range(500):
+            #print(time)
             for j in range(2):
                 if done[j]:
                     continue
@@ -49,5 +52,8 @@ def main():
             if (done[0] and done[1]):
                 print(i, epRewards)
                 break
+
+    plt.plot(totalReward)
+    plt.show()
 
 main()

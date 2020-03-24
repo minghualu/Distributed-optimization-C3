@@ -8,7 +8,7 @@ def maxAction(Q, state, actions):
 
 agentYX = [(0, 0)]
 wallsYX = []
-numGames = 10000
+numGames = 1500
 totalRewards = np.zeros(numGames)
 
 def main():
@@ -33,7 +33,7 @@ def main():
 
     for i in range(numGames):
         if i % 1 == 0:
-            print('starting game', i)
+            #print('starting game', i)
 
             # Explore or exploit
 
@@ -42,7 +42,7 @@ def main():
             else:
                 EPSILON = 0
             
-            print(EPSILON)
+            #print(EPSILON)
 
             done = False
             epRewards = 0
