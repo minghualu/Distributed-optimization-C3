@@ -1,5 +1,6 @@
 from DQL_env import *
 from DQL_agentclass import *
+import matplotlib.pyplot as plt
 
 def main():
     n = 10
@@ -36,5 +37,8 @@ def main():
                 break
             if len(agent.memory) > batch_size:
                 agent.replay(batch_size)
+
+    plt.plot(totalReward)
+    plt.show()
 
 main()

@@ -8,7 +8,7 @@ def maxAction(Q, state, actions):
 
 #Defining variables
 numGames = 200000
-totalRewards = np.zeros((numGames, 2))
+totalRewards = np.zeros((numGames, 1))
 wallsYX = []
 n = 10
 m = 10
@@ -38,7 +38,7 @@ def main():
 
         #Resetting variables
         done = [False, False]
-        epRewards = [0, 0]
+        epRewards = 0
         observation_old = [(n - 1) * m, (n - 1) * m * n * m]
         observation_new = [0, 0]
         agents[0].reset(0)
@@ -75,7 +75,7 @@ def main():
                             1 - EPSILON) else env.actionSpaceSample()
 
                 observation_new[j], reward, done[j], info = env.step(action_old, agent, otherAgentPos)
-                epRewards[j] += reward
+                epRewards += reward
                 #print(info)
 
                 action_new = maxAction(agent.Q, observation_new[j], env.possibleActions)
@@ -96,7 +96,7 @@ def main():
                 ###
                 observation_old[j] = observation_new[j]
 
-                totalRewards[i][j] = epRewards[j]
+                totalRewards[i] = epRewards
                 
                 #Breaking episode if agents have collided
                 if info == 1:

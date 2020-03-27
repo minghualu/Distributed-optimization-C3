@@ -20,7 +20,7 @@ class Warehouse:
         self.agentPosition = 0
 
         # Walls
-        self.walls = [1, 11, 21, 31, 41, 51, 61, 94, 74, 64, 54,44,34,24,75,76,77,87,97]
+        self.walls = [1, 11, 21, 31, 41, 51, 61, 93, 83, 73, 63, 53]
 
     # Defining end of episode
     def isTerminalState(self, state):

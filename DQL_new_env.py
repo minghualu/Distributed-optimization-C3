@@ -74,26 +74,24 @@ class Warehouse:
         resultingPos = currentPos + self.actionSpace[action]
         
         if not self.offGridMove(resultingPos, currentPos):
-            if not self.isTerminalState(resultingPos, agent_nr):
-                if resultingPos in self.walls:
-                    reward = -50
-                #elif resultingPos == self.agentsPos[agent_nr-1]:
-                elif self.state[0][resultingPos] == 1:
-                    reward = -100
-                    print('collided')
-                    return self.state, reward, False, 1
+            if self.state[0][resultingPos] == 0:
+                if self.isTerminalState(resultingPos, agent_nr):
+                    reward = 50 
+                    print('Reached goal', agent_nr+1)
                 else:
                     reward = -1
-                    #print('stepped')
             else:
-                reward = 50
-                print('Reached goal', agent_nr)
+                #Collided with another agent
+                reward = -100
+                print('collided')
+                return self.state, reward, False, 1
 
             #self.setGrid(resultingPos, agent)
             self.updateState(currentPos, resultingPos)
             self.agentsPos[agent_nr] = resultingPos
             return self.state, reward, self.isTerminalState(resultingPos, agent_nr), None
         else:
+            #Collided with wall
             reward = -1
             return self.state, reward, self.isTerminalState(currentPos, agent_nr), None
 
