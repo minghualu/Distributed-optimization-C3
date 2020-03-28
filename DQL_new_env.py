@@ -80,14 +80,14 @@ class Warehouse:
                 #elif resultingPos == self.agentsPos[agent_nr-1]:
                 elif self.state[0][resultingPos] == 1:
                     reward = -100
-                    print('collided')
+                    # print('collided')
                     return self.state, reward, False, 1
                 else:
                     reward = -1
                     #print('stepped')
             else:
                 reward = 50
-                print('Reached goal', agent_nr)
+                print('Agent #{} reached goal'.format(agent_nr+1))
 
             #self.setGrid(resultingPos, agent)
             self.updateState(currentPos, resultingPos)

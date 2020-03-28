@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 def main():
     n = 10
     m = 10
-    NumGames = 100
+    NumGames = 10
     env = Warehouse(n, m)
     state_size = 100 
     action_size = 4

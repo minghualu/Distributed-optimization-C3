@@ -20,6 +20,8 @@ def main():
         epRewards = 0
         env.reset()
         state = env.state
+        print()
+        print("Game number: {}, Initial state: {}".format(i+1, state))
         #state = np.reshape(state, [1, state_size])
         done = [False, False]
         for time in range(500):
@@ -30,6 +32,8 @@ def main():
                 #env.render()
                 action = agents[j].act(state)
                 next_state, reward, done[j], info = env.step(action, j)
+                print("Agent: {}, action: {}, next_state: {}, reward: {}, done: {}, info: {}"
+                      .format(j+1, action, next_state, reward, done[j], info))
                 #reward = reward if not done else -10
                 #next_state = np.reshape(next_state, [1, state_size])
                 agents[j].memorize(state, action, reward, next_state, done[j])
@@ -42,15 +46,17 @@ def main():
                     break
                 
                 if len(agents[j].memory) > batch_size:
-                    #print('memory')
+                    print('Replay agent #{}'.format(j+1))
                     agents[j].replay(batch_size)
             
             #If the agents have collided           
-            if info == 1:
-                print(i, epRewards)
-                break
-            if (done[0] and done[1]):
-                print(i, epRewards)
+            # if info == 1:
+            #     print(i, epRewards)
+            #     break
+            if (done[0] and done[1]) or info == 1:
+                print("Episode: {}/{}, score: {}, e1: {:.2}, e2: {:.2}"
+                      .format(i+1, NumGames, epRewards, agents[0].epsilon, agents[1].epsilon))
+                # print(i, epRewards)
                 break
 
     plt.plot(totalReward)
