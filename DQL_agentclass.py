@@ -30,10 +30,13 @@ class DQNAgent:
         return model
 
     def memorize(self, state, action, reward, next_state, done):
-        self.memory.append((state, action, reward, next_state, done))
+        # print("Memorize. State: {}, action: {}, reward: {}, next_state: {}, done: {}"
+        #       .format(state, action, reward, next_state, done))
+        new_state = next_state.copy()
+        self.memory.append((state, action, reward, new_state, done))
 
-    def act(self, state):
-        if np.random.rand() <= self.epsilon:
+    def act(self, state, epsilon):
+        if np.random.rand() <= epsilon:
             return random.randrange(self.action_size)
         act_values = self.model.predict(state)
         return np.argmax(act_values[0])  # returns action
@@ -47,9 +50,12 @@ class DQNAgent:
                           np.amax(self.model.predict(next_state)[0]))
             target_f = self.model.predict(state)
             target_f[0][action] = target
+            # print("Fit. State: {}, action: {}, reward: {}, next_state: {}, done: {}, target_f: {}"
+            #       .format(state, action, reward, next_state, done, target_f))
             self.model.fit(state, target_f, epochs=1, verbose=0)
-        if self.epsilon > self.epsilon_min:
-            self.epsilon *= self.epsilon_decay
+            
+        # if self.epsilon > self.epsilon_min:
+        #     self.epsilon *= self.epsilon_decay
 
     def load(self, name):
         self.model.load_weights(name)
