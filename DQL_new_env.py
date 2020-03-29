@@ -77,24 +77,23 @@ class Warehouse:
             if self.state[0][resultingPos] == 0:
                 if self.isTerminalState(resultingPos, agent_nr):
                     reward = 50 
-                    print('Reached goal', agent_nr+1)
+                    # print('Agent #{} reached goal'.format(agent_nr+1))
                 else:
                     reward = -1
             else:
-                print('Agent #{} reached goal'.format(agent_nr+1))
                 #Collided with another agent
                 reward = -100
-                print('collided')
-                return self.state, reward, False, 1
+                # print('collided')
+                return self.state, reward, False, True
 
             #self.setGrid(resultingPos, agent)
             self.updateState(currentPos, resultingPos)
             self.agentsPos[agent_nr] = resultingPos
-            return self.state, reward, self.isTerminalState(resultingPos, agent_nr), None
+            return self.state, reward, self.isTerminalState(resultingPos, agent_nr), False
         else:
             #Collided with wall
-            reward = -1
-            return self.state, reward, self.isTerminalState(currentPos, agent_nr), None
+            reward = -5
+            return self.state, reward, self.isTerminalState(currentPos, agent_nr), False
 
     def reset(self):
         #self.grid = np.zeros((self.n, self.m))
