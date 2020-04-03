@@ -9,10 +9,8 @@ def main():
     NumGames = 10
     epsilon = 1
     epsilon_min = 0.01
-    #env = Warehouse(n, m, 0, 90, 99, 9)
-    env = Warehouse(n, m, 0, 12, 15, 3)
-    #state_size = 100 
-    state_size = 16 
+    env = Warehouse(n, m, 0, n*(m-1), n*m-1, n-1)
+    state_size = n*m 
     action_size = 4
     agents = [DQNAgent(state_size, action_size), DQNAgent(state_size, action_size)]
     #done = False
