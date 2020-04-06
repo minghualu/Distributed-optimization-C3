@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 def main():
     n = 10
     m = 10
-    NumGames = 3000
+    NumGames = 10
     epsilon = 1
     epsilon_min = 0.01
     #(rad, kolumn, start1, start2, start3, start4, mål1, mål2, mål3, mål4)
@@ -29,20 +29,22 @@ def main():
         for time in range(100):
             #print(time)
             for j in range(4):
-                if done[j]:
-                    continue
-                if info[j]:
+                if done[j] or info[j]:
                     continue
                 #env.render()
                 curr_state = env.state.copy()
                 action = agents[j].act(curr_state, epsilon)
-                next_state, reward, done[j], info[j] = env.step(action, j)
+                next_state, reward, done[j], info[j], otherAgentNr = env.step(action, j)
                 #print("Agent: {}, action: {}, curr_state: {}, next_state: {}, reward: {}, done: {}, info: {}"
                 #       .format(j+1, action, curr_state, next_state, reward, done[j], info))
                 #reward = reward if not done else -10
                 #next_state = np.reshape(next_state, [1, state_size])
                 agents[j].memorize(curr_state, action, reward, next_state, done[j])
                 epRewards += reward
+                
+                if otherAgentNr != None:
+                    print(otherAgentNr)
+                    info[int(otherAgentNr)-1] = True
 
                 # If the agents have collided
                 if info[j]:
