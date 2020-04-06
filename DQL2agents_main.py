@@ -4,13 +4,15 @@ from testDQL import *
 import matplotlib.pyplot as plt
 
 def main():
-    n = 4
-    m = 4
-    NumGames = 10
+    n = 10
+    m = 10
+    NumGames = 4000
     epsilon = 1
     epsilon_min = 0.01
     env = Warehouse(n, m, 0, n*(m-1), n*m-1, n-1)
-    state_size = n*m 
+    #env = Warehouse(n, m, 0, 12, 15, 3)
+    state_size = n*m
+    #state_size = 16
     action_size = 4
     agents = [DQNAgent(state_size, action_size), DQNAgent(state_size, action_size)]
     #done = False
@@ -24,7 +26,7 @@ def main():
         # print()
         # print("Game number: {}, Initial state: {}".format(i+1, env.state), end = '')
         done = [False, False]
-        for time in range(100):
+        for time in range(200):
             #print(time)
             for j in range(2):
                 if done[j]:

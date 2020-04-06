@@ -4,9 +4,9 @@ from testDQL import *
 import matplotlib.pyplot as plt
 
 def main():
-    n = 4
-    m = 4
-    NumGames = 100
+    n = 10
+    m = 10
+    NumGames = 3000
     epsilon = 1
     epsilon_min = 0.01
     #(rad, kolumn, start1, start2, start3, start4, mål1, mål2, mål3, mål4)
@@ -25,16 +25,19 @@ def main():
         # print()
         # print("Game number: {}, Initial state: {}".format(i+1, env.state), end = '')
         done = [False, False, False, False]
+        info = [False, False, False, False]
         for time in range(100):
             #print(time)
             for j in range(4):
                 if done[j]:
                     continue
+                if info[j]:
+                    continue
                 #env.render()
                 curr_state = env.state.copy()
                 action = agents[j].act(curr_state, epsilon)
-                next_state, reward, done[j], info = env.step(action, j)
-                # print("Agent: {}, action: {}, curr_state: {}, next_state: {}, reward: {}, done: {}, info: {}"
+                next_state, reward, done[j], info[j] = env.step(action, j)
+                #print("Agent: {}, action: {}, curr_state: {}, next_state: {}, reward: {}, done: {}, info: {}"
                 #       .format(j+1, action, curr_state, next_state, reward, done[j], info))
                 #reward = reward if not done else -10
                 #next_state = np.reshape(next_state, [1, state_size])
@@ -42,15 +45,15 @@ def main():
                 epRewards += reward
 
                 # If the agents have collided
-                if info == True:
-                    break
+                if info[j]:
+                    continue
                 
                 if len(agents[j].memory) > batch_size:
                     # print('Replay agent #{}'.format(j+1))
                     replays[j] += 1
                     agents[j].replay(batch_size)
             
-            if (done[0] and done[1] and done[2] and done[4]) or info == True:
+            if (done[0] and done[1] and done[2] and done[3]) or (info[0] and info[1] and info[2] and info[3]):
                 break
 
         if epsilon > epsilon_min:
