@@ -1,18 +1,21 @@
 from DQL_new_env import *
 from DQL_agentclass import *
-from testDQL import *
+# from testDQL import *
 import matplotlib.pyplot as plt
+import pickle
 
 def main():
-    n = 4
-    m = 4
-    NumGames = 10
+    n = 5
+    m = 5
+    NumGames = 100
+    NumTimes = 100
     epsilon = 1
     epsilon_min = 0.01
-    #env = Warehouse(n, m, 0, 90, 99, 9)
-    env = Warehouse(n, m, 0, 12, 15, 3)
+    env = Warehouse(n, m, 0, (m-1)*n, n*m-1, m-1)   # Start in upper and lower left and ending in the other end of the diagonals
+    # env = Warehouse(n, m, 0, 12, 15, 3)
+    # env = Warehouse(n, m, 0, 20, 24, 4)
     #state_size = 100 
-    state_size = 16 
+    state_size = n*m 
     action_size = 4
     agents = [DQNAgent(state_size, action_size), DQNAgent(state_size, action_size)]
     #done = False
@@ -26,7 +29,7 @@ def main():
         # print()
         # print("Game number: {}, Initial state: {}".format(i+1, env.state), end = '')
         done = [False, False]
-        for time in range(100):
+        for time in range(NumTimes):
             #print(time)
             for j in range(2):
                 if done[j]:
@@ -63,10 +66,15 @@ def main():
         print("Game: {}/{}, \t epRewards: {:3}, \t done: {}, \t collided: {}, \t time: {:3}, \t replays: {},   \t epsilon: {:.2}"
               .format(i+1, NumGames, epRewards, done, info, time, replays, epsilon))
 
+    with open('env.pkl', 'wb') as output:  # Overwrites any existing file.
+        pickle.dump(env, output, pickle.HIGHEST_PROTOCOL)
+    with open('agents.pkl', 'wb') as output:  # Overwrites any existing file.
+        pickle.dump(agents, output, pickle.HIGHEST_PROTOCOL)
+
     plt.plot(totalReward)
     plt.show()
     
-    testDQL2(agents, env)
+    # testDQL2(agents, env)
 
 
 main()
