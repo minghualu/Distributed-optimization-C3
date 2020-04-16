@@ -1,12 +1,11 @@
 from DQL_4agents_env import *
 from DQL_agentclass import *
-from testDQL import *
 import matplotlib.pyplot as plt
 
 def main():
-    n = 4
-    m = 4
-    NumGames = 10
+    n = 10
+    m = 10
+    NumGames = 10000
     epsilon = 1
     epsilon_min = 0.01
     #(rad, kolumn, start1, start2, start3, start4, mål1, mål2, mål3, mål4)
@@ -41,8 +40,8 @@ def main():
                 next_state = [env.agentsPos[0], env.agentsPos[1], env.agentsPos[2], env.agentsPos[3]]
                 next_state = np.reshape(next_state, [1, state_size])
                 
-                print("Agent: {}, action: {}, curr_state: {}, next_state: {}, reward: {}, done: {}, info: {}"
-                       .format(j+1, action, curr_state, next_state, reward, done[j], info))
+                #print("Agent: {}, action: {}, curr_state: {}, next_state: {}, reward: {}, done: {}, info: {}"
+                #       .format(j+1, action, curr_state, next_state, reward, done[j], info))
                 #reward = reward if not done else -10
                 #next_state = np.reshape(next_state, [1, state_size])
                 
@@ -70,8 +69,8 @@ def main():
                 epsilon = epsilon_min
 
         totalReward[i] = epRewards
-        #print("Game: {}/{}, \t epRewards: {:3}, \t done: {}, \t collided: {}, \t time: {:3}, \t replays: {},   \t epsilon: {:.2}"
-        #      .format(i+1, NumGames, epRewards, done, info, time, replays, epsilon))
+        print("Game: {}/{}, \t epRewards: {:3}, \t done: {}, \t collided: {}, \t time: {:3}, \t replays: {},   \t epsilon: {:.2}"
+              .format(i+1, NumGames, epRewards, done, info, time, replays, epsilon))
 
     plt.plot(totalReward)
     plt.show()

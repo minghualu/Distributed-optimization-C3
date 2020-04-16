@@ -1,12 +1,11 @@
 from DQL_3agents_env import *
 from DQL_agentclass import *
-from testDQL import *
 import matplotlib.pyplot as plt
 
 def main():
-    n = 6
-    m = 6
-    NumGames = 3000
+    n = 10
+    m = 10
+    NumGames = 4000
     epsilon = 1
     epsilon_min = 0.01
     env = Warehouse(n, m, 0, n*(m-1), n-1, n*m-1, n-1, n*(m-1))
@@ -14,7 +13,7 @@ def main():
     state_size = 3
     action_size = 4
     agents = [DQNAgent(state_size, action_size), DQNAgent(state_size, action_size), DQNAgent(state_size, action_size)]
-    batch_size = 32
+    batch_size = 100
     totalReward = np.zeros(NumGames)
 
     for i in range(NumGames):
@@ -25,7 +24,7 @@ def main():
         # print("Game number: {}, Initial state: {}".format(i+1, env.state), end = '')
         done = [False, False, False]
         info = [False, False, False]
-        for time in range(100):
+        for time in range(200):
             #print(time)
             for j in range(3):
                 if done[j] or info[j]:
