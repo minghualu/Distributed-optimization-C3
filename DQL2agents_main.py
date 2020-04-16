@@ -1,12 +1,11 @@
-from DQL_new_env import *
+from DQL_2agents_env import *
 from DQL_agentclass import *
-from testDQL import *
 import matplotlib.pyplot as plt
 
 def main():
-    n = 6
-    m = 6
-    NumGames = 500
+    n = 10
+    m = 10
+    NumGames = 5000
     epsilon = 1
     epsilon_min = 0.01
     env = Warehouse(n, m, 0, n*(m-1), n*m-1, n-1)
