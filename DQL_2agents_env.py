@@ -15,8 +15,8 @@ class Warehouse:
         self.posSpace = [i for i in range(n*m)]
 
         # Defining all actions
-        self.actionSpace = [-self.m, self.m, -1, 1]
-        self.possibleActions = [0, 1, 2, 3] #Up, down, left, right
+        self.actionSpace = [-self.m, self.m, -1, 1, 0]
+        self.possibleActions = [0, 1, 2, 3, 4] #Up, down, left, right, stay
 
         # Walls
         #self.walls = [1, 11, 21, 31, 41, 51, 61, 93, 83, 73, 63, 53]

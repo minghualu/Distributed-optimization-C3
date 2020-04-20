@@ -3,15 +3,15 @@ from DQL_agentclass import *
 import matplotlib.pyplot as plt
 
 def main():
-    n = 10
-    m = 10
-    NumGames = 5000
+    n = 5
+    m = 5
+    NumGames = 1000
     epsilon = 1
     epsilon_min = 0.01
     env = Warehouse(n, m, 0, n*(m-1), n*m-1, n-1)
     #state_size = n*m 
     state_size = 2
-    action_size = 4
+    action_size = 5
     agents = [DQNAgent(state_size, action_size), DQNAgent(state_size, action_size)]
     #done = False
     batch_size = 32
