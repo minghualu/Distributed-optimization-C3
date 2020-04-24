@@ -1,4 +1,4 @@
-from DQL_env import *
+from DQL_1agent_env import *
 from DQL_agentclass import *
 import matplotlib.pyplot as plt
 
