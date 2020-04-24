@@ -1,5 +1,5 @@
 from tkinter import *
-from QL1agent_main import *
+from QL_1agent_main import *
 
 i = 0
 
