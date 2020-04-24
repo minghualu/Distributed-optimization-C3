@@ -1,5 +1,5 @@
 from tkinter import *
-from QL_2agent_main import *
+from QL_2agents_main import *
 import matplotlib.pyplot as plt
 
 
