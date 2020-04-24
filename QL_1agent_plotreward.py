@@ -1,4 +1,4 @@
-from QL1agent_main import *
+from QL_1agent_main import *
 import matplotlib.pyplot as plt
 
 main()
